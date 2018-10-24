@@ -15,7 +15,7 @@ public class KNN {
 		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
 				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
 				+ Helpers.interpretSigned(bits));
-		
+	
 		// Charge les étiquettes depuis le disque
 		byte[] labelsRaw =
 		Helpers.readBinaryFile("datasets/10-per-digit_labels_train") ;
@@ -25,7 +25,17 @@ public class KNN {
 		System.out.println(labelsTrain.length) ;
 		// Affiche le premier label
 		System.out.println(labelsTrain[0]) ;
-
+		// Charge les images depuis le disque
+		byte[] imagesRaw =
+		Helpers.readBinaryFile("datasets/10-per-digit_images_train") ;
+		// Parse les images
+		byte[][][] imagesTrain = parseIDXimages(imagesRaw) ;
+		// Affiche les dimensions des images
+		System.out.println("Number of images : " + imagesTrain.length) ;
+		System.out.println("height : " + imagesTrain[0].length) ;
+		System.out.println("width : " + imagesTrain[0][0].length) ;
+		// Affiche les 30 premières images et leurs étiquettes
+		Helpers.show("Test", imagesTrain , labelsTrain , 2, 15) ;
 	}
 	
 	/**
@@ -59,9 +69,36 @@ public class KNN {
 	 * @return A tensor of images
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
-		// TODO: Implémenter
-		return null;
+		
+        int numberImages = extractInt(data[4],data[5],data[6],data[7]);
+        int HeightImages = extractInt(data[8],data[9],data[10],data[11]);
+        int WidthImages = extractInt(data[12],data[13],data[14],data[15]);
+        
+        int numberPixelsPerImage = HeightImages * WidthImages;
+
+        byte pixelValue;
+        
+        byte[][][] arrayTensor = new byte[numberImages][HeightImages][WidthImages];
+
+        for(int c = 0; c < numberImages ; c++) {
+        	
+           for(int b = 0; b<HeightImages; b++) {
+        	   
+              for (int i = 0; i < WidthImages; i++) {
+            	  
+            	 pixelValue =  (byte) ((data[i + b*WidthImages + c*numberPixelsPerImage + 15]) - 128) ;
+                 arrayTensor[c][b][i] = pixelValue;
+                 
+              }
+
+           }
+
+        }
+
+        return arrayTensor;
 	}
+	
+	
 
 	/**
 	 * Parses an idx images containing labels
@@ -91,8 +128,15 @@ public class KNN {
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
-		// TODO: Implémenter
-		return 0f;
+		float sum = 0;
+		
+		for (int i = 0; i < a.length-1; i++) {
+			for (int j = 0; j < a[0].length-1; j++) {
+				sum += (a[i][j] - b[i][j]) * (a[i][j] - b[i][j]);
+			}
+		}
+		
+		return sum;
 	}
 
 	/**
