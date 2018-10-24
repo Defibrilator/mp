@@ -18,18 +18,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Helpers {
-    
-	public static int binaryStringToInt(String bit) {
-		int nb = 0;
-		
-		for (int i = bit.length()-1; i >= 0; i--) {
-			if (bit.charAt(i) == '1') {
-				nb += Math.pow(2, i);
-			}
-		}
-		
-		return nb;
-	}
 	
 	/**
      * @brief Reads all the bytes of a file

@@ -5,13 +5,11 @@ public class KNN {
 		byte b1 = 40; // 00101000
 		byte b2 = 20; // 00010100
 		byte b3 = 10; // 00001010
-		byte b4 = 5; // 00000101
+		byte b4 = -1; // 00000101
 
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
 		int result = extractInt(b1, b2, b3, b4);
 		System.out.println(result);
-
-		System.out.println(Helpers.binaryStringToInt("1001"));
 		
 		String bits = "10000001";
 		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
@@ -30,16 +28,18 @@ public class KNN {
 	 */
 	public static int extractInt(byte b31ToB24, byte b23ToB16, byte b15ToB8, byte b7ToB0) {
 
-		byte[] list = new byte[4];
+		byte[] list = {b31ToB24, b23ToB16, b15ToB8, b7ToB0};
 		
-		String sum;
-		int k;
+		String sumString = "";
+		int sumInt = 0;
 		
 		for (int i = 0; i < list.length; i++) {
-			
+			sumString += Helpers.byteToBinaryString(list[i]);
 		}
+				
+		sumInt = Integer.parseInt(sumString, 2);
 		
-		return 0;
+		return sumInt;
 	}
 
 	/**
