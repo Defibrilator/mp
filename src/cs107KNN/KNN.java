@@ -15,6 +15,17 @@ public class KNN {
 		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
 				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
 				+ Helpers.interpretSigned(bits));
+		
+		// Charge les étiquettes depuis le disque
+		byte[] labelsRaw =
+		Helpers.readBinaryFile("datasets/10-per-digit_labels_train") ;
+		// Parse les étiquettes
+		byte[] labelsTrain = parseIDXlabels(labelsRaw) ;
+		// Affiche le nombre de labels
+		System.out.println(labelsTrain.length) ;
+		// Affiche le premier label
+		System.out.println(labelsTrain[0]) ;
+
 	}
 	
 	/**
