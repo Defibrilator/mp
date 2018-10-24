@@ -15,14 +15,6 @@ public class KNN {
 		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
 				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
 				+ Helpers.interpretSigned(bits));
-		
-		byte[] data = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
-		
-		byte[] test = parseIDXlabels(data);
-		
-		System.out.println(data.length);
-		System.out.print(test.length);
-		
 	}
 	
 	/**
