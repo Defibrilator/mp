@@ -5,7 +5,7 @@ public class KNN {
 		byte b1 = 40; // 00101000
 		byte b2 = 20; // 00010100
 		byte b3 = 10; // 00001010
-		byte b4 = -1; // 00000101
+		byte b4 = 5; // 00000101
 
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
 		int result = extractInt(b1, b2, b3, b4);
@@ -16,6 +16,12 @@ public class KNN {
 				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
 				+ Helpers.interpretSigned(bits));
 		
+		byte[] data = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
+		
+		byte[] test = parseIDXlabels(data);
+		
+		System.out.println(data.length);
+		System.out.print(test.length);
 		
 	}
 	
@@ -62,8 +68,16 @@ public class KNN {
 	 * @return the parsed labels
 	 */
 	public static byte[] parseIDXlabels(byte[] data) {
-		// TODO: Implémenter
-		return null;
+		byte[] labels = new byte[data[7]];
+		
+		int i = 0;
+		
+		for (int k = 8; k < labels.length; k++) {
+			labels[i] = data[k];
+			i++;
+		}
+		
+		return labels;
 	}
 
 	/**
