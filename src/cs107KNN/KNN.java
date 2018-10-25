@@ -1,9 +1,11 @@
 package cs107KNN;
 
+import java.util.Arrays;
+
 public class KNN {
 	public static void main(String[] args) {
 	
-		KNNTest.invertedSimilarityTest();
+		KNNTest.quicksortTest();
 		
 	}
 	
@@ -169,8 +171,18 @@ public class KNN {
 	 *         Example: values = quicksortIndices([3, 7, 0, 9]) gives [2, 0, 1, 3]
 	 */
 	public static int[] quicksortIndices(float[] values) {
-		// TODO: Implémenter
-		return null;
+		int[] indices = new int[values.length];
+		
+		for (int i = 0; i < values.length; i++) {
+			indices[i] = i;
+		}
+		
+		int l = 0;
+		int h = values.length - 1;
+		
+		quicksortIndices(values, indices, l, h);
+		
+		return indices;
 	}
 
 	/**
@@ -183,7 +195,30 @@ public class KNN {
 	 *                to sort
 	 */
 	public static void quicksortIndices(float[] values, int[] indices, int low, int high) {
-		// TODO: Implémenter
+		float pivot = values[low];
+		int l = low;
+		int h = high;
+		
+		while (l <= h) {
+			if (values[l] < pivot) {
+				l++;
+			} else if (values[h] > pivot) {
+				h--;
+			} else {
+				swap(l, h, values, indices);
+				l++;
+				h--;
+			}
+		}
+		
+		if (low < h) {
+			quicksortIndices(values, indices, low, h);
+		}
+		
+		if (high > l) {
+			quicksortIndices(values, indices, l, high);
+		}
+	
 	}
 
 	/**
@@ -194,7 +229,16 @@ public class KNN {
 	 * @param indices the array of ints whose values are to be swapped
 	 */
 	public static void swap(int i, int j, float[] values, int[] indices) {
-		// TODO: Implémenter
+		float temp;
+		int temp2;
+		
+		temp = values[i];
+		values[i] = values[j];
+		values[j] = temp;
+		
+		temp2 = indices[i];
+		indices[i] = indices[j];
+		indices[j] = temp2;
 	}
 
 	/**
