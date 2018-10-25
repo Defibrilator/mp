@@ -3,7 +3,7 @@ package cs107KNN;
 public class KNN {
 	public static void main(String[] args) {
 	
-		KNNTest.squaredEuclideanDistanceTest();
+		KNNTest.invertedSimilarityTest();
 		
 	}
 	
@@ -116,8 +116,46 @@ public class KNN {
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
-		// TODO: Implémenter
-		return 0f;
+		float simInv = 0;
+		float sum1 = 0, sum2 = 0, sum3 = 0, racine;
+		
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum1 += ((a[i][j] - moyenne(a, b)[0]) * (b[i][j] - moyenne(a, b)[1]));
+				sum2 += ((a[i][j] - moyenne(a, b)[0]) * (a[i][j] - moyenne(a, b)[0]));
+				sum3 += ((b[i][j] - moyenne(a, b)[1]) * (b[i][j] - moyenne(a, b)[1]));
+			}
+		}
+		
+		racine = (float) Math.sqrt(sum2 * sum3);
+		simInv = 1 - (sum1 / racine);
+		
+		return simInv;
+	}
+	
+	/**
+	 * @brief Computes the average for two images
+	 * 
+	 * @param a, b two images of same dimensions
+	 * 
+	 * @return size two array of both averages
+	 */
+	public static float[] moyenne(byte[][] a, byte[][] b) {
+		float[] moyenne = new float[2];
+		
+		float produit = a.length * a[0].length;
+		
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				moyenne[0] += a[i][j];
+				moyenne[1] += b[i][j];
+			}
+		}
+		
+		moyenne[0] /= produit;
+		moyenne[1] /= produit;
+		
+		return moyenne;
 	}
 
 	/**

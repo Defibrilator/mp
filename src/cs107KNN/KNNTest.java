@@ -57,6 +57,15 @@ public class KNNTest {
 		System.out.println("Distance attendue: 16.0");
 	}
 
+	public static void moyenneTest() {
+		System.out.println("=== Test moyenne ===");
+		byte[][] a = new byte[][] {{1, 1}, {2, 2}};
+		byte[][] b = new byte[][] {{3, 3}, {4, 4}};
+		
+		System.out.println("Moyenne calculée: a " + KNN.moyenne(a, b)[0] + " b " + KNN.moyenne(a, b)[1]);
+		System.out.println("Moyenne attendue: [0] : 1.5 [1] : 3.5");
+	}
+	
 	public static void invertedSimilarityTest() {
 		System.out.println("=== Test similarité inversée ===");
 		byte[][] a = new byte[][] {{1, 1}, {1, 2}};
