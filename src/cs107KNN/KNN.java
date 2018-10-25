@@ -2,40 +2,9 @@ package cs107KNN;
 
 public class KNN {
 	public static void main(String[] args) {
-		byte b1 = 40; // 00101000
-		byte b2 = 20; // 00010100
-		byte b3 = 10; // 00001010
-		byte b4 = 5; // 00000101
-
-		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
-		int result = extractInt(b1, b2, b3, b4);
-		System.out.println(result);
-		
-		String bits = "10000001";
-		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
-				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
-				+ Helpers.interpretSigned(bits));
 	
-		// Charge les étiquettes depuis le disque
-		byte[] labelsRaw =
-		Helpers.readBinaryFile("datasets/10-per-digit_labels_train") ;
-		// Parse les étiquettes
-		byte[] labelsTrain = parseIDXlabels(labelsRaw) ;
-		// Affiche le nombre de labels
-		System.out.println(labelsTrain.length) ;
-		// Affiche le premier label
-		System.out.println(labelsTrain[0]) ;
-		// Charge les images depuis le disque
-		byte[] imagesRaw =
-		Helpers.readBinaryFile("datasets/10-per-digit_images_train") ;
-		// Parse les images
-		byte[][][] imagesTrain = parseIDXimages(imagesRaw) ;
-		// Affiche les dimensions des images
-		System.out.println("Number of images : " + imagesTrain.length) ;
-		System.out.println("height : " + imagesTrain[0].length) ;
-		System.out.println("width : " + imagesTrain[0][0].length) ;
-		// Affiche les 30 premières images et leurs étiquettes
-		Helpers.show("Test", imagesTrain , labelsTrain , 2, 15) ;
+		KNNTest.squaredEuclideanDistanceTest();
+		
 	}
 	
 	/**
@@ -130,9 +99,9 @@ public class KNN {
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
 		float sum = 0;
 		
-		for (int i = 0; i < a.length-1; i++) {
-			for (int j = 0; j < a[0].length-1; j++) {
-				sum += (a[i][j] - b[i][j]) * (a[i][j] - b[i][j]);
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum += (byte) ((a[i][j] - b[i][j]) * (a[i][j] - b[i][j]));
 			}
 		}
 		
