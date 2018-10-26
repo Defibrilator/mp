@@ -1,43 +1,12 @@
 package cs107KNN;
 
+import java.util.Arrays;
+
 public class KNN {
 	public static void main(String[] args) {
-		byte b1 = 40; // 00101000
-		byte b2 = 20; // 00010100
-		byte b3 = 10; // 00001010
-		byte b4 = 5; // 00000101
-
-		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
-		int result = extractInt(b1, b2, b3, b4);
-		System.out.println(result);
-		System.out.println(              System.getProperty("user.dir"));
-		String bits = "10000001";
-		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
-				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
-				+ Helpers.interpretSigned(bits));
 	
-		// Charge les étiquettes depuis le disque
-		byte[] labelsRaw = Helpers.readBinaryFile("mp/datasets/10-per-digit_labels_train") ;
-		// Parse les étiquettes
-		byte[] labelsTrain = parseIDXlabels(labelsRaw) ;
-		// Affiche le nombre de labels
-		System.out.println(labelsTrain.length) ;
-		// Affiche le premier label
-		System.out.println(labelsTrain[0]) ;
-		// Charge les images depuis le disque
-		byte[] imagesRaw =
-		Helpers.readBinaryFile("mp/datasets/10-per-digit_images_train") ;
-		// Parse les images
-		byte[][][] imagesTrain = parseIDXimages(imagesRaw) ;
-		// Affiche les dimensions des images
-		System.out.println("Number of images : " + imagesTrain.length) ;
-		System.out.println("height : " + imagesTrain[0].length) ;
-		System.out.println("width : " + imagesTrain[0][0].length) ;
-		// Affiche les 30 premières images et leurs étiquettes
-		//Helpers.show("Test", imagesTrain , labelsTrain , 2, 15) ;
-
-		System.out.println("sum equals " + squaredEuclideanDistance(imagesTrain[0],imagesTrain[1]));
-		System.out.println(invertedSimilarity(imagesTrain[0],imagesTrain[0]));
+		KNNTest.quicksortTest();
+		
 	}
 	
 	/**
@@ -130,15 +99,11 @@ public class KNN {
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
-
-		float sum  = 0;
-
-		for(int i=0; i<a.length; i++){
-
-			for(int j = 0; j<a[0].length; j++){
-
-				sum += (a[i][j] - b[i][j])*(a[i][j] - b[i][j]);
-
+		float sum = 0;
+		
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum +=  ((a[i][j] - b[i][j]) * (a[i][j] - b[i][j]));
 			}
 
 		}
@@ -155,33 +120,47 @@ public class KNN {
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
-
-		float invertSimTop = 0;
-		float inverSimBottom1 = 0;
-		float invertSimBottom2 = 0;
-
-		float[] moyennes = Helpers.moyenneImages(a,b);
-		float moyenneA = moyennes[0];
-		float moyenneB = moyennes[1];
-
-		for(int i =0; i<a.length; i++){
-
-			for(int j=0;j<a[0].length; j++){
-
-				invertSimTop += ((a[i][j]-moyenneA)*(b[i][j]-moyenneB)) ;
-				inverSimBottom1 += (a[i][j]-moyenneA)*(a[i][j]-moyenneA);
-				invertSimBottom2 += (b[i][j]-moyenneB)*(b[i][j]-moyenneB);
-
+		float simInv = 0;
+		float sum1 = 0, sum2 = 0, sum3 = 0, racine;
+		float[] moyennes = moyenne(a,b);
+		
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				sum1 += ((a[i][j] - moyennes[0]) * (b[i][j] - moyennes[1]));
+				sum2 += ((a[i][j] - moyennes[0]) * (a[i][j] - moyennes[0]));
+				sum3 += ((b[i][j] - moyennes[1]) * (b[i][j] - moyennes[1]));
 			}
-
 		}
-
-		float invertSim = 1 - (invertSimTop/(float)Math.sqrt(inverSimBottom1*invertSimBottom2));
-
-
-
-
-		return invertSim;
+		
+		racine = (float) Math.sqrt(sum2 * sum3);
+		simInv = 1 - (sum1 / racine);
+		
+		return simInv;
+	}
+	
+	/**
+	 * @brief Computes the average for two images
+	 * 
+	 * @param a, b two images of same dimensions
+	 * 
+	 * @return size two array of both averages
+	 */
+	public static float[] moyenne(byte[][] a, byte[][] b) {
+		float[] moyenne = new float[2];
+		
+		float produit = a.length * a[0].length;
+		
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[0].length; j++) {
+				moyenne[0] += a[i][j];
+				moyenne[1] += b[i][j];
+			}
+		}
+		
+		moyenne[0] /= produit;
+		moyenne[1] /= produit;
+		
+		return moyenne;
 	}
 
 	/**
@@ -195,8 +174,18 @@ public class KNN {
 	 *         Example: values = quicksortIndices([3, 7, 0, 9]) gives [2, 0, 1, 3]
 	 */
 	public static int[] quicksortIndices(float[] values) {
-		// TODO: Implémenter
-		return null;
+		int[] indices = new int[values.length];
+		
+		for (int i = 0; i < values.length; i++) {
+			indices[i] = i;
+		}
+		
+		int l = 0;
+		int h = values.length - 1;
+		
+		quicksortIndices(values, indices, l, h);
+		
+		return indices;
 	}
 
 	/**
@@ -209,7 +198,30 @@ public class KNN {
 	 *                to sort
 	 */
 	public static void quicksortIndices(float[] values, int[] indices, int low, int high) {
-		// TODO: Implémenter
+		float pivot = values[low];
+		int l = low;
+		int h = high;
+		
+		while (l <= h) {
+			if (values[l] < pivot) {
+				l++;
+			} else if (values[h] > pivot) {
+				h--;
+			} else {
+				swap(l, h, values, indices);
+				l++;
+				h--;
+			}
+		}
+		
+		if (low < h) {
+			quicksortIndices(values, indices, low, h);
+		}
+		
+		if (high > l) {
+			quicksortIndices(values, indices, l, high);
+		}
+	
 	}
 
 	/**
@@ -220,7 +232,16 @@ public class KNN {
 	 * @param indices the array of ints whose values are to be swapped
 	 */
 	public static void swap(int i, int j, float[] values, int[] indices) {
-		// TODO: Implémenter
+		float temp;
+		int temp2;
+		
+		temp = values[i];
+		values[i] = values[j];
+		values[j] = temp;
+		
+		temp2 = indices[i];
+		indices[i] = indices[j];
+		indices[j] = temp2;
 	}
 
 	/**
