@@ -10,15 +10,14 @@ public class KNN {
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
 		int result = extractInt(b1, b2, b3, b4);
 		System.out.println(result);
-		
+		System.out.println(              System.getProperty("user.dir"));
 		String bits = "10000001";
 		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
 				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
 				+ Helpers.interpretSigned(bits));
 	
 		// Charge les étiquettes depuis le disque
-		byte[] labelsRaw =
-		Helpers.readBinaryFile("datasets/10-per-digit_labels_train") ;
+		byte[] labelsRaw = Helpers.readBinaryFile("mp/datasets/10-per-digit_labels_train") ;
 		// Parse les étiquettes
 		byte[] labelsTrain = parseIDXlabels(labelsRaw) ;
 		// Affiche le nombre de labels
@@ -27,7 +26,7 @@ public class KNN {
 		System.out.println(labelsTrain[0]) ;
 		// Charge les images depuis le disque
 		byte[] imagesRaw =
-		Helpers.readBinaryFile("datasets/10-per-digit_images_train") ;
+		Helpers.readBinaryFile("mp/datasets/10-per-digit_images_train") ;
 		// Parse les images
 		byte[][][] imagesTrain = parseIDXimages(imagesRaw) ;
 		// Affiche les dimensions des images
@@ -35,7 +34,10 @@ public class KNN {
 		System.out.println("height : " + imagesTrain[0].length) ;
 		System.out.println("width : " + imagesTrain[0][0].length) ;
 		// Affiche les 30 premières images et leurs étiquettes
-		Helpers.show("Test", imagesTrain , labelsTrain , 2, 15) ;
+		//Helpers.show("Test", imagesTrain , labelsTrain , 2, 15) ;
+
+		System.out.println("sum equals " + squaredEuclideanDistance(imagesTrain[0],imagesTrain[1]));
+		System.out.println(invertedSimilarity(imagesTrain[0],imagesTrain[0]));
 	}
 	
 	/**
@@ -128,14 +130,20 @@ public class KNN {
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
-		float sum = 0;
-		
-		for (int i = 0; i < a.length-1; i++) {
-			for (int j = 0; j < a[0].length-1; j++) {
-				sum += (a[i][j] - b[i][j]) * (a[i][j] - b[i][j]);
+
+		float sum  = 0;
+
+		for(int i=0; i<a.length; i++){
+
+			for(int j = 0; j<a[0].length; j++){
+
+				sum += (a[i][j] - b[i][j])*(a[i][j] - b[i][j]);
+
 			}
+
 		}
-		
+
+
 		return sum;
 	}
 
@@ -147,8 +155,33 @@ public class KNN {
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
-		// TODO: Implémenter
-		return 0f;
+
+		float invertSimTop = 0;
+		float inverSimBottom1 = 0;
+		float invertSimBottom2 = 0;
+
+		float[] moyennes = Helpers.moyenneImages(a,b);
+		float moyenneA = moyennes[0];
+		float moyenneB = moyennes[1];
+
+		for(int i =0; i<a.length; i++){
+
+			for(int j=0;j<a[0].length; j++){
+
+				invertSimTop += ((a[i][j]-moyenneA)*(b[i][j]-moyenneB)) ;
+				inverSimBottom1 += (a[i][j]-moyenneA)*(a[i][j]-moyenneA);
+				invertSimBottom2 += (b[i][j]-moyenneB)*(b[i][j]-moyenneB);
+
+			}
+
+		}
+
+		float invertSim = 1 - (invertSimTop/(float)Math.sqrt(inverSimBottom1*invertSimBottom2));
+
+
+
+
+		return invertSim;
 	}
 
 	/**
