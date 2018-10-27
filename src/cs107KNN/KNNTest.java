@@ -8,7 +8,7 @@ public class KNNTest {
 		// Decommentez au fur et à mesure que vous implémentez
 		//extractIntTest();
 		//parsingTest();
-		//euclideanDistanceTest();
+		//squaredEuclideanDistanceTest();
 		//invertedSimilarityTest();
 		//quicksortTest();
 		//indexOfMaxTest();
@@ -31,8 +31,8 @@ public class KNNTest {
 		int obtained = KNN.extractInt(b1, b2, b3, b4);
 
 		System.out.println("=== Test extractInt ===");
-		System.out.println("Entier attendu:\t " + expected);
-		System.out.println("extractInt produit:\t " + "00101000011110000100011010001011");
+		System.out.println("Entier attendu:\t " + Integer.parseInt(expected, 2));
+		System.out.println("extractInt produit:\t " + obtained);
 	}
 
 	public static void parsingTest() {
@@ -57,15 +57,6 @@ public class KNNTest {
 		System.out.println("Distance attendue: 16.0");
 	}
 
-	public static void moyenneTest() {
-		System.out.println("=== Test moyenne ===");
-		byte[][] a = new byte[][] {{1, 1}, {2, 2}};
-		byte[][] b = new byte[][] {{3, 3}, {4, 4}};
-		
-		System.out.println("Moyenne calculée: a " + KNN.moyenne(a, b)[0] + " b " + KNN.moyenne(a, b)[1]);
-		System.out.println("Moyenne attendue: [0] : 1.5 [1] : 3.5");
-	}
-	
 	public static void invertedSimilarityTest() {
 		System.out.println("=== Test similarité inversée ===");
 		byte[][] a = new byte[][] {{1, 1}, {1, 2}};
