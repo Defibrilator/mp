@@ -23,8 +23,8 @@ public class KNN {
 		String sumString = "";
 		int sumInt = 0;
 		
-		for (int i = 0; i < list.length; i++) {
-			sumString += Helpers.byteToBinaryString(list[i]);
+		for (int j = 0; j < list.length; j++) {
+			sumString += Helpers.byteToBinaryString(list[j]);
 		}
 				
 		sumInt = Integer.parseInt(sumString, 2);
