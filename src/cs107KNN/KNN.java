@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 public class KNN {
 	public static void main(String[] args) {
-	
 		KNNTest.quicksortTest();
-		
+		KNNTest.squaredEuclideanDistanceTest();
+		KNNTest.indexOfMaxTest();
+		KNNTest.electLabelTest();
+
 	}
 	
 	/**
@@ -252,8 +254,18 @@ public class KNN {
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
-		// TODO: Implémenter
-		return 0;
+			int maxElement = array[0];
+			int index = 0;
+
+			for(int i =0;i<array.length; i++){
+				if(array[i] > maxElement){
+					maxElement = array[i];
+					index = i;
+				}
+			}
+
+
+		return index;
 	}
 
 	/**
@@ -266,8 +278,20 @@ public class KNN {
 	 * @return the winner of the election
 	 */
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
-		// TODO: Implémenter
-		return 0;
+
+		int[] tab = new int[10];
+
+		/*
+		* On itère les k labels les plus proches, c'est à dire les k premiers indices.
+		*/
+		for(int i=0; i<k; i++){
+			tab[labels[sortedIndices[i]]] +=1;
+		}
+
+
+
+
+		return (byte)indexOfMax(tab);
 	}
 
 	/**
