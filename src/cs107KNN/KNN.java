@@ -1,12 +1,37 @@
 package cs107KNN;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class KNN {
 	public static void main(String[] args) {
-		KNNTest.knnClassifyTest();
+		System.out.println("=== Test predictions ===");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Entrez la taille du dataset");
+		String nombreimages = scanner.nextLine();
+		long start = System.currentTimeMillis();
 
+		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/100-per-digit_images_train"));
+		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/100-per-digit_labels_train"));
+
+		byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/10k_images_test"));
+		byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/10k_labels_test"));
+
+		int TESTS = labelsTest.length;
+
+		byte[] predictions = new byte[TESTS];
+		for (int i = 0; i < TESTS; i++) {
+			predictions[i] = KNN.knnClassify(imagesTest[i], imagesTrain, labelsTrain, 7);
+		}
+
+		double accuracyTest = accuracy(predictions, labelsTest);
+
+		long end = System.currentTimeMillis();
+		double time = (end - start) / 1000d;
+		System.out.println("Accuracy = " + accuracy(predictions, (Arrays.copyOfRange(labelsTest, 0, TESTS)))*100 + " %");
+		System.out.println("Time = " + time + " seconds");
+		System.out.println("Time per test image = " + (time / TESTS));
 	}
 	
 	public static Scanner keyb = new Scanner(System.in);
@@ -327,6 +352,15 @@ public class KNN {
 	 */
 	public static double accuracy(byte[] predictedLabels, byte[] trueLabels) {
 		// TODO: Implémenter
-		return 0d;
+		double sum = 0;
+
+		for(int i =0; i<predictedLabels.length; i++){
+
+			sum += (predictedLabels[i] == trueLabels[i]) ? 1 : 0;
+
+		}
+		double accuracy = (sum/predictedLabels.length);
+
+		return accuracy;
 	}
 }
