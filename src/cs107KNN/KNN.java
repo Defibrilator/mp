@@ -6,37 +6,45 @@ import java.util.Scanner;
 
 public class KNN {
 	public static void main(String[] args) {
-		while(true) {
-			System.out.println("=== Test predictions ===");
-			Scanner scanner = new Scanner(System.in);
-			System.out.println("Entrez la taille du dataset");
-			String nombreimages = scanner.nextLine();
-			long start = System.currentTimeMillis();
-
-			byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/" + nombreimages + "-per-digit_images_train"));
-			byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/" + nombreimages + "-per-digit_labels_train"));
-
-			byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/10k_images_test"));
-			byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/10k_labels_test"));
-
-			int TESTS = 1000;
-
-			byte[] predictions = new byte[TESTS];
-			for (int i = 0; i < TESTS; i++) {
-				predictions[i] = KNN.knnClassify(imagesTest[i], imagesTrain, labelsTrain, 7);
-			}
-
-			double accuracyTest = accuracy(predictions, labelsTest);
-
-			long end = System.currentTimeMillis();
-			double time = (end - start) / 1000d;
-			System.out.println("Accuracy = " + accuracy(predictions, (Arrays.copyOfRange(labelsTest, 0, TESTS))) * 100 + " %");
-			System.out.println("Time = " + time + " seconds");
-			System.out.println("Time per test image = " + (time / TESTS));
-		}
+		
+		timeAndAccuracy(1000);
+		
 	}
 	
 	public static Scanner keyb = new Scanner(System.in);
+	
+	/**
+	 * @brief Prints the execution time and the accuracy of the test
+	 * 
+	 * @param  TESTS is the size of the test
+	 */
+	
+	public static void timeAndAccuracy(int TESTS) {
+		
+		System.out.println("Entrez la taille du dataset");
+		String nombreimages = keyb.nextLine();
+		
+		long start = System.currentTimeMillis();
+
+		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/" + nombreimages + "-per-digit_images_train"));
+		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/" + nombreimages + "-per-digit_labels_train"));
+
+		byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
+		byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
+
+		byte[] predictions = new byte[TESTS];
+		
+		for (int i = 0; i < TESTS; i++) {
+			predictions[i] = KNN.knnClassify(imagesTest[i], imagesTrain, labelsTrain, 7);
+		}
+
+		long end = System.currentTimeMillis();
+		double time = (end - start) / 1000d;
+		
+		System.out.println("Accuracy = " + accuracy(predictions, (Arrays.copyOfRange(labelsTest, 0, TESTS))) * 100 + " %");
+		System.out.println("Time = " + time + " seconds");
+		System.out.println("Time per test image = " + (time / TESTS));
+	}
 	
 	/**
 	 * Composes four bytes into an integer using big endian convention.
