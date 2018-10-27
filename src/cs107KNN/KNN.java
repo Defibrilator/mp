@@ -9,6 +9,8 @@ public class KNN {
 		
 		timeAndAccuracy(1000);
 		
+		
+		keyb.close();
 	}
 	
 	public static Scanner keyb = new Scanner(System.in);
@@ -21,13 +23,13 @@ public class KNN {
 	
 	public static void timeAndAccuracy(int TESTS) {
 		
-		System.out.println("Entrez la taille du dataset");
-		String nombreimages = keyb.nextLine();
+		System.out.println("Entrez la taille du dataset (10, 100, 1000 ou 5000)");
+		String nombreImages = keyb.nextLine();
 		
 		long start = System.currentTimeMillis();
 
-		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/" + nombreimages + "-per-digit_images_train"));
-		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/" + nombreimages + "-per-digit_labels_train"));
+		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/" + nombreImages + "-per-digit_images_train"));
+		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/" + nombreImages + "-per-digit_labels_train"));
 
 		byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
 		byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
