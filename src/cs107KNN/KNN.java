@@ -303,7 +303,8 @@ public class KNN {
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {		
 		float[] distances = new float[trainImages.length];
 		
-		int choix = 1;
+		
+		int choix = 2;
 		
 		for (int i = 0; i < trainImages.length; i++) {
 			distances[i] = (choix == 1) ? squaredEuclideanDistance(image, trainImages[i]) : invertedSimilarity(image, trainImages[i]);

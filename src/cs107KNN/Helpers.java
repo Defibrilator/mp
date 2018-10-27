@@ -18,16 +18,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Helpers {
-	
-	/**
+    /**
      * @brief Reads all the bytes of a file
      *
      * @param filename the path of the file to read
      * 
      * @return the bytes contained in the file in an array
      */
-	
-	public static byte[] readBinaryFile(String filename) {
+    public static byte[] readBinaryFile(String filename) {
         Path path = Paths.get(filename);
         byte[] data = null;
         try {
@@ -136,7 +134,8 @@ public class Helpers {
      */
     public static void show(String title, byte[][][] tensor, byte[] labels, int rows, int columns) {
         JFrame frame = initFrame(rows, columns, title);
-        for (int i = 0; i < Math.min(rows * columns, tensor.length); i++) {
+	int cells = Math.min(rows * columns, Math.min(tensor.length, labels.length));
+        for (int i = 0; i < cells; i++) {
             frame.add(imagePanel(toBufferedImage(tensor[i]), labels[i]));
         }
         drawFrame(frame);
@@ -157,40 +156,12 @@ public class Helpers {
      */
     public static void show(String title, byte[][][] tensor, byte[] labels, byte[] trueLabels, int rows, int columns) {
         JFrame frame = initFrame(rows, columns, title);
-        for (int i = 0; i < Math.min(rows * columns, tensor.length); i++) {
+	int cells = Math.min(rows * columns, Math.min(tensor.length, Math.min(labels.length, trueLabels.length)));
+        for (int i = 0; i < cells; i++) {
             frame.add(imagePanel(toBufferedImage(tensor[i]), labels[i], trueLabels[i]));
         }
         drawFrame(frame);
     }
-
-    public static float[] moyenneImages(byte[][] a, byte[][] b){
-
-        float[] moyennes = new float[2];
-
-        float moyenne1 =0;
-        float moyenne2 =0;
-
-
-        for(int i = 0; i<a.length; i++){
-
-            for(int j=0; j<a[0].length; j++){
-
-                moyenne1 += a[i][j];
-                moyenne2 += b[i][j];
-
-            }
-
-        }
-
-        moyenne1 = (moyenne1)/(a[0].length*a.length);
-        moyenne2 = (moyenne2)/(b[0].length*b.length);
-        moyennes[0] = moyenne1;
-        moyennes[1] = moyenne2;
-
-        return moyennes;
-
-
-    };
 
     private static JFrame initFrame(int rows, int columns, String title) {
         final JFrame frame = new JFrame(title);
