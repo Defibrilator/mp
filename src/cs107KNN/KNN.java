@@ -305,7 +305,15 @@ public class KNN {
 	 * @return the label of the image
 	 */
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
-		// TODO: Implémenter
+
+
+		int[] indices = new int[trainImages.length];
+		int[] distances = new int[trainImages.length];
+
+		for( i in )
+
+
+
 		return 0;
 	}
 
