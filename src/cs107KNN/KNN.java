@@ -1,15 +1,15 @@
 package cs107KNN;
 
-import java.util.Arrays;
+import java.util.Scanner;
+
 
 public class KNN {
 	public static void main(String[] args) {
-		KNNTest.quicksortTest();
-		KNNTest.squaredEuclideanDistanceTest();
-		KNNTest.indexOfMaxTest();
-		KNNTest.electLabelTest();
+		KNNTest.knnClassifyTest();
 
 	}
+	
+	public static Scanner keyb = new Scanner(System.in);
 	
 	/**
 	 * Composes four bytes into an integer using big endian convention.
@@ -25,8 +25,8 @@ public class KNN {
 		String sumString = "";
 		int sumInt = 0;
 		
-		for (int i = 0; i < list.length; i++) {
-			sumString += Helpers.byteToBinaryString(list[i]);
+		for (int j = 0; j < list.length; j++) {
+			sumString += Helpers.byteToBinaryString(list[j]);
 		}
 				
 		sumInt = Integer.parseInt(sumString, 2);
@@ -280,16 +280,12 @@ public class KNN {
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
 
 		int[] tab = new int[10];
-
-		/*
-		* On itère les k labels les plus proches, c'est à dire les k premiers indices.
-		*/
+		
+		// On itère les k labels les plus proches, c'est à dire les k premiers indices.
+		
 		for(int i=0; i<k; i++){
 			tab[labels[sortedIndices[i]]] +=1;
 		}
-
-
-
 
 		return (byte)indexOfMax(tab);
 	}
@@ -304,17 +300,20 @@ public class KNN {
 	 *
 	 * @return the label of the image
 	 */
-	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
-
-
-		int[] indices = new int[trainImages.length];
-		int[] distances = new int[trainImages.length];
-
-		for( i in )
-
-
-
-		return 0;
+	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {		
+		float[] distances = new float[trainImages.length];
+		
+		int choix = 1;
+		
+		for (int i = 0; i < trainImages.length; i++) {
+			distances[i] = (choix == 1) ? squaredEuclideanDistance(image, trainImages[i]) : invertedSimilarity(image, trainImages[i]);
+		}
+		
+		int[] indices = quicksortIndices(distances);
+		
+		int label = electLabel(indices, trainLabels, k);
+		
+		return (byte)label;
 	}
 
 	/**
