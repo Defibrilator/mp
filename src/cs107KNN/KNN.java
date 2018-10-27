@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 public class KNN {
 	public static void main(String[] args) {
-	
 		KNNTest.quicksortTest();
-		
+		KNNTest.squaredEuclideanDistanceTest();
+		KNNTest.indexOfMaxTest();
+		KNNTest.electLabelTest();
+
 	}
 	
 	/**
@@ -103,10 +105,12 @@ public class KNN {
 		
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
-				sum += (byte) ((a[i][j] - b[i][j]) * (a[i][j] - b[i][j]));
+				sum +=  ((a[i][j] - b[i][j]) * (a[i][j] - b[i][j]));
 			}
+
 		}
-		
+
+
 		return sum;
 	}
 
@@ -120,12 +124,13 @@ public class KNN {
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
 		float simInv = 0;
 		float sum1 = 0, sum2 = 0, sum3 = 0, racine;
+		float[] moyennes = moyenne(a,b);
 		
 		for (int i = 0; i < a.length; i++) {
 			for (int j = 0; j < a[0].length; j++) {
-				sum1 += ((a[i][j] - moyenne(a, b)[0]) * (b[i][j] - moyenne(a, b)[1]));
-				sum2 += ((a[i][j] - moyenne(a, b)[0]) * (a[i][j] - moyenne(a, b)[0]));
-				sum3 += ((b[i][j] - moyenne(a, b)[1]) * (b[i][j] - moyenne(a, b)[1]));
+				sum1 += ((a[i][j] - moyennes[0]) * (b[i][j] - moyennes[1]));
+				sum2 += ((a[i][j] - moyennes[0]) * (a[i][j] - moyennes[0]));
+				sum3 += ((b[i][j] - moyennes[1]) * (b[i][j] - moyennes[1]));
 			}
 		}
 		
@@ -249,8 +254,18 @@ public class KNN {
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
-		// TODO: Implémenter
-		return 0;
+			int maxElement = array[0];
+			int index = 0;
+
+			for(int i =0;i<array.length; i++){
+				if(array[i] > maxElement){
+					maxElement = array[i];
+					index = i;
+				}
+			}
+
+
+		return index;
 	}
 
 	/**
@@ -263,8 +278,20 @@ public class KNN {
 	 * @return the winner of the election
 	 */
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
-		// TODO: Implémenter
-		return 0;
+
+		int[] tab = new int[10];
+
+		/*
+		* On itère les k labels les plus proches, c'est à dire les k premiers indices.
+		*/
+		for(int i=0; i<k; i++){
+			tab[labels[sortedIndices[i]]] +=1;
+		}
+
+
+
+
+		return (byte)indexOfMax(tab);
 	}
 
 	/**

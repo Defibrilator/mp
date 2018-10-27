@@ -163,6 +163,35 @@ public class Helpers {
         drawFrame(frame);
     }
 
+    public static float[] moyenneImages(byte[][] a, byte[][] b){
+
+        float[] moyennes = new float[2];
+
+        float moyenne1 =0;
+        float moyenne2 =0;
+
+
+        for(int i = 0; i<a.length; i++){
+
+            for(int j=0; j<a[0].length; j++){
+
+                moyenne1 += a[i][j];
+                moyenne2 += b[i][j];
+
+            }
+
+        }
+
+        moyenne1 = (moyenne1)/(a[0].length*a.length);
+        moyenne2 = (moyenne2)/(b[0].length*b.length);
+        moyennes[0] = moyenne1;
+        moyennes[1] = moyenne2;
+
+        return moyennes;
+
+
+    };
+
     private static JFrame initFrame(int rows, int columns, String title) {
         final JFrame frame = new JFrame(title);
         frame.setLayout(new GridLayout(rows, columns));
