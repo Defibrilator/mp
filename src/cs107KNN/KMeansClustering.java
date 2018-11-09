@@ -135,6 +135,12 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void recomputeAssignments(byte[][][] tensor, byte[][][] centroids, int[] assignments) {
+
+		int assignegnmentsLength = assignments.length;
+
+		for(int i = 0; i<assignegnmentsLength; i++){
+			centroids[assignments[i]] = tensor[i];
+		}
 	}
 
     /**
