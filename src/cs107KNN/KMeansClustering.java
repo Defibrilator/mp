@@ -11,19 +11,28 @@ public class KMeansClustering {
 		int maxIters = 20;
 
 		// TODO: Adaptez les parcours
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_labels_train"));
+		//**byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_images_train"));
+		//byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_labels_train"));
+//
+	//	byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
+//
+	//	byte[] reducedLabels = new byte[reducedImages.length];
+		//for (int i = 0; i < reducedLabels.length; i++) {
+			//reducedLabels[i] = KNN.knnClassify(reducedImages[i], images, labels, 5);
+			//System.out.println("Classified " + (i + 1) + " / " + reducedImages.length);
+		//}
 
-		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
-
-		byte[] reducedLabels = new byte[reducedImages.length];
-		for (int i = 0; i < reducedLabels.length; i++) {
-			reducedLabels[i] = KNN.knnClassify(reducedImages[i], images, labels, 5);
-			System.out.println("Classified " + (i + 1) + " / " + reducedImages.length);
+		//Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
+		//Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
+		
+		byte[] list = new byte[4];
+		
+		
+		encodeInt(2049, list, 0);
+		
+		for (int i = 0; i < list.length; i++) {
+			System.out.println(list[i]);
 		}
-
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
 	}
 
     /**
@@ -34,8 +43,12 @@ public class KMeansClustering {
      * @return the array of byte ready to be written to an IDX file
      */
 	public static byte[] encodeIDXimages(byte[][][] images) {
-		// TODO: Implémenter
-		return null;
+		byte[] data = new byte[images.length * images[0].length * images[0][0].length];
+		
+		encodeInt(2051, data, 0);
+		encodeInt()
+		
+		return data;
 	}
 
     /**
@@ -46,8 +59,16 @@ public class KMeansClustering {
      * @return the array of bytes ready to be written to an IDX file
      */
 	public static byte[] encodeIDXlabels(byte[] labels) {
-		// TODO: Implémenter
-		return null;
+		byte[] data = new byte[labels.length + 4];
+		
+		encodeInt(2049, data, 0);
+		encodeInt(labels.length, data, 4);
+		
+		for (int i = 4; i < data.length; i++) {
+			data[i] = labels[i-4];
+		}
+		
+		return data;
 	}
 
     /**
@@ -62,7 +83,7 @@ public class KMeansClustering {
 	public static void encodeInt(int n, byte[] destination, int offset) {
 		// TODO: Implémenter
 		String ourByte  = Integer.toBinaryString(n);
-
+		System.out.print(ourByte);
 		String byte1 = ourByte.substring(0,3);
 		String byte2 = ourByte.substring(4,7);
 		String byte3 = ourByte.substring(8,11);

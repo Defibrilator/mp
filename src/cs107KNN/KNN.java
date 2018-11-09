@@ -7,10 +7,8 @@ import java.util.Scanner;
 public class KNN {
 	public static void main(String[] args) {
 		
-		timeAndAccuracy(1000);
 		
 		
-		keyb.close();
 	}
 	
 	public static Scanner keyb = new Scanner(System.in);
