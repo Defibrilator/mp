@@ -61,6 +61,17 @@ public class KMeansClustering {
      */
 	public static void encodeInt(int n, byte[] destination, int offset) {
 		// TODO: Implémenter
+		String ourByte  = Integer.toBinaryString(n);
+
+		String byte1 = ourByte.substring(0,3);
+		String byte2 = ourByte.substring(4,7);
+		String byte3 = ourByte.substring(8,11);
+		String byte4 = ourByte.substring(12,15);
+
+		destination[offset] = (byte)Integer.parseInt(byte1,2);
+		destination[offset + 1 ] = (byte)Integer.parseInt(byte2,2);
+		destination[offset + 2 ] = (byte)Integer.parseInt(byte3,2);
+		destination[offset + 3 ] = (byte)Integer.parseInt(byte4,2);
 	}
 
     /**
