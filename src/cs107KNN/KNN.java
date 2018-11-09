@@ -7,8 +7,9 @@ import java.util.Scanner;
 public class KNN {
 	public static void main(String[] args) {
 		
-		
-		
+		KNNTest.extractIntTest();
+		extractInt((byte)0,(byte)0,(byte)8,(byte)1);
+		keyb.close();
 	}
 	
 	public static Scanner keyb = new Scanner(System.in);
@@ -63,7 +64,8 @@ public class KNN {
 		for (int j = 0; j < list.length; j++) {
 			sumString += Helpers.byteToBinaryString(list[j]);
 		}
-				
+
+
 		sumInt = Integer.parseInt(sumString, 2);
 		
 		return sumInt;
