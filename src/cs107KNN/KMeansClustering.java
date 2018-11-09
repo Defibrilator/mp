@@ -1,5 +1,6 @@
 package cs107KNN;
 
+import java.sql.SQLOutput;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Random;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 
 public class KMeansClustering {
 	public static void main(String[] args) {
-		int K = 5000;
+/*		int K = 5000;
 		int maxIters = 20;
 
 		// TODO: Adaptez les parcours
@@ -23,7 +24,15 @@ public class KMeansClustering {
 		}
 
 		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
+		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));*/
+
+		byte[] list = new byte[4];
+
+		encodeInt(2051,list,0);
+
+		for(int i = 0; i<4; i++){
+			System.out.println(list[i]);
+		}
 	}
 
     /**
@@ -61,17 +70,28 @@ public class KMeansClustering {
      */
 	public static void encodeInt(int n, byte[] destination, int offset) {
 		// TODO: Implémenter
+		char[] tempList = new char[32];
 		String ourByte  = Integer.toBinaryString(n);
+		int length = ourByte.length();
 
-		String byte1 = ourByte.substring(0,3);
-		String byte2 = ourByte.substring(4,7);
-		String byte3 = ourByte.substring(8,11);
-		String byte4 = ourByte.substring(12,15);
+		for(int i=0;i<32; i++){
+			if (32-(length+i)>0){
+				tempList[i] = '0';
 
-		destination[offset] = (byte)Integer.parseInt(byte1,2);
-		destination[offset + 1 ] = (byte)Integer.parseInt(byte2,2);
-		destination[offset + 2 ] = (byte)Integer.parseInt(byte3,2);
-		destination[offset + 3 ] = (byte)Integer.parseInt(byte4,2);
+			}
+			else{
+				tempList[i] = ourByte.charAt(i-(32-length));
+
+			}
+		}
+
+		String convertedByte = new String(tempList);
+
+
+		destination[offset] = (byte)Integer.parseInt(convertedByte.substring(0,8),2);
+		destination[offset + 1 ] = (byte)Integer.parseInt(convertedByte.substring(8,16),2);
+		destination[offset + 2 ] = (byte)Integer.parseInt(convertedByte.substring(16,24),2);
+		destination[offset + 3 ] = (byte)Integer.parseInt(convertedByte.substring(24,32),2);
 	}
 
     /**
