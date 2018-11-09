@@ -58,7 +58,17 @@ public class KMeansClustering {
 		byte[] data = new byte[images.length * images[0].length * images[0][0].length];
 		
 		encodeInt(2051, data, 0);
-		encodeInt()
+		encodeInt(images.length, data, 4);
+		encodeInt(images[0].length, data, 8);
+		encodeInt(images[0][0].length, data, 12);
+		
+		for (int i = 16; i < images.length; i++) {
+			for (int j = 0; j < images[0].length; j++) {
+				for (int k = 0; k < images[0][0].length; k++) {
+					data[i+j+k] = images[i][j][k];
+				}
+			}
+		}
 		
 		return data;
 	}
