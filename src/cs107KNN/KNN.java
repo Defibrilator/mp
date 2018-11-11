@@ -6,9 +6,9 @@ import java.util.Scanner;
 
 public class KNN {
 	public static void main(String[] args) {
-		
-		KNNTest.extractIntTest();
-		extractInt((byte)0,(byte)0,(byte)8,(byte)1);
+
+
+		timeAndAccuracy(1000);
 		keyb.close();
 	}
 	
@@ -22,16 +22,14 @@ public class KNN {
 	
 	public static void timeAndAccuracy(int TESTS) {
 		
-		System.out.println("Entrez la taille du dataset (10, 100, 1000 ou 5000)");
-		String nombreImages = keyb.nextLine();
-		
+
 		long start = System.currentTimeMillis();
 
-		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/" + nombreImages + "-per-digit_images_train"));
-		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/" + nombreImages + "-per-digit_labels_train"));
+		byte[][][] imagesTrain = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/1000-per-digit_images_train"));
+		byte[] labelsTrain = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/1000-per-digit_labels_train"));
 
-		byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
-		byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
+		byte[][][] imagesTest = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/10k_images_test"));
+		byte[] labelsTest = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/10k_labels_test"));
 
 		byte[] predictions = new byte[TESTS];
 		
@@ -79,7 +77,7 @@ public class KNN {
 	 * @return A tensor of images
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
-		
+
         int numberImages = extractInt(data[4],data[5],data[6],data[7]);
         int HeightImages = extractInt(data[8],data[9],data[10],data[11]);
         int WidthImages = extractInt(data[12],data[13],data[14],data[15]);
@@ -95,8 +93,7 @@ public class KNN {
            for(int b = 0; b<HeightImages; b++) {
         	   
               for (int i = 0; i < WidthImages; i++) {
-            	  
-            	 pixelValue =  (byte) ((data[i + b*WidthImages + c*numberPixelsPerImage + 15]) - 128) ;
+            	 pixelValue =  (byte) ((data[i + b*WidthImages + c*numberPixelsPerImage + 16] & 0xFF) - 128) ;
                  arrayTensor[c][b][i] = pixelValue;
                  
               }
@@ -122,7 +119,7 @@ public class KNN {
 		
 		int i = 0;
 		
-		for (int k = 8; k < labels.length; k++) {
+		for (int k = 8; k < labels.length+8; k++) {
 			labels[i] = data[k];
 			i++;
 		}
@@ -341,7 +338,7 @@ public class KNN {
 		float[] distances = new float[trainImages.length];
 		
 		
-		int choix = 2;
+		int choix = 1;
 		
 		for (int i = 0; i < trainImages.length; i++) {
 			distances[i] = (choix == 1) ? squaredEuclideanDistance(image, trainImages[i]) : invertedSimilarity(image, trainImages[i]);

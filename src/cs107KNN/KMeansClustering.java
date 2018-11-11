@@ -1,10 +1,7 @@
 package cs107KNN;
 
-import java.sql.SQLOutput;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.ArrayList;
+import javax.xml.bind.Element;
+import java.util.*;
 
 public class KMeansClustering {
 	public static void main(String[] args) {
@@ -12,11 +9,10 @@ public class KMeansClustering {
 		int maxIters = 20;
 
 		 //TODO: Adaptez les parcours
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/1000-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/1000-per-digit_labels_train"));
-
+		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/1000-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/1000-per-digit_labels_train"));
+		System.out.println("Reducing");
 		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
-
 		byte[] reducedLabels = new byte[reducedImages.length];
 		for (int i = 0; i < reducedLabels.length; i++) {
 			reducedLabels[i] = KNN.knnClassify(reducedImages[i], images, labels, 5);
@@ -29,8 +25,8 @@ public class KMeansClustering {
 
 
 
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
+		Helpers.writeBinaryFile("mp/datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
+		Helpers.writeBinaryFile("mp/datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
 
 	}
 
@@ -42,17 +38,22 @@ public class KMeansClustering {
      * @return the array of byte ready to be written to an IDX file
      */
 	public static byte[] encodeIDXimages(byte[][][] images) {
-		byte[] data = new byte[images.length * images[0].length * images[0][0].length];
-		
+		byte[] data = new byte[images.length * images[0].length * images[0][0].length + 16];
+
+		int tailleTensor = images.length;
+		int Hauteur = images[0].length;
+		int Largeur = images[0][0].length;
+
 		encodeInt(2051, data, 0);
-		encodeInt(images.length, data, 4);
-		encodeInt(images[0].length, data, 8);
-		encodeInt(images[0][0].length, data, 12);
+		encodeInt(tailleTensor, data, 4);
+		encodeInt(Hauteur, data, 8);
+		encodeInt(Largeur, data, 12);
 		
-		for (int i = 16; i < images.length; i++) {
-			for (int j = 0; j < images[0].length; j++) {
-				for (int k = 0; k < images[0][0].length; k++) {
-					data[i+j+k] = images[i][j][k];
+		for (int i = 16; i < tailleTensor + 16; i++) {
+			for (int j = 0; j < Hauteur; j++) {
+				for (int k = 0; k < Largeur; k++) {
+
+					data[((i-16)*Hauteur*Largeur)+(j*Largeur)+k+16] = (byte)((int)(images[i-16][j][k])+128);
 				}
 			}
 		}
@@ -68,13 +69,14 @@ public class KMeansClustering {
      * @return the array of bytes ready to be written to an IDX file
      */
 	public static byte[] encodeIDXlabels(byte[] labels) {
-		byte[] data = new byte[labels.length + 4];
+		byte[] data = new byte[labels.length + 8];
 		
 		encodeInt(2049, data, 0);
 		encodeInt(labels.length, data, 4);
 		
-		for (int i = 4; i < data.length; i++) {
-			data[i] = labels[i-4];
+		for (int i = 8; i < (labels.length + 8) ; i++) {
+
+			data[i] = labels[i-8];
 		}
 		
 		return data;
@@ -131,6 +133,7 @@ public class KMeansClustering {
 
 		int nIter = 0;
 		while (nIter < maxIters) {
+			System.out.println("Recomputing");
 			// Step 1: Assign points to closest centroid
 			recomputeAssignments(tensor, centroids, assignments);
 			System.out.println("Recomputed assignments");
@@ -168,20 +171,21 @@ public class KMeansClustering {
 				distancesForICluster[b] = KNN.squaredEuclideanDistance(tensor[i], centroids[b]);
 			}
 
-			int closestCluster = indexOfMaxFloat(distancesForICluster);
+			int closestCluster = indexOfMinFloat(distancesForICluster);
+
 			//On place le numéro du cluster à la position correspondante de l'image i dans assignments.
 			assignments[i] = closestCluster;
 		}
 
 	}
 
-	public static int indexOfMaxFloat(float[] array) {
-		float maxElement = array[0];
+	public static int indexOfMinFloat(float[] array) {
+		float minElement = array[0];
 		int index = 0;
 
 		for(int i =0;i<array.length; i++){
-			if(array[i] > maxElement){
-				maxElement = array[i];
+			if(array[i] < minElement){
+				minElement = array[i];
 				index = i;
 			}
 		}
@@ -198,26 +202,70 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void recomputeCentroids(byte[][][] tensor, byte[][][] centroids, int[] assignments) {
-		int tensor00Length = tensor[0][0].length;
-		int tensor0Length = tensor[0].length;
-		int tensorLength = tensor.length;
-		
-		
-		for (int x = 0; x < 10; x++) { //passer dans chaque cluster
-			for (int i = 0; i < tensorLength; i++)	
-				for (int h = 0; h < tensor0Length; h++) { 
-					for (int k = 0; k < tensor00Length; k++) {
-						centroids[i][h][k] = moyennePixel(x, h, k, tensor, assignments);
-					}
-				}
+
+		ArrayList<ArrayList> list = new ArrayList<ArrayList>(assignments.length);
+
+		for(int i=0; i<5000; i++){
+			ArrayList<byte[][]> inner = new ArrayList<byte[][]>();
+			list.add(i,inner );
+
 		}
+
+		for(int i=0; i<assignments.length; i++){
+
+
+				list.get(assignments[i]).add(0,(byte[][])tensor[i]);
+
+
+		}
+
+
+		//Deuxième partie: On effectue la moyenne.
+
+		for(int a=0; a<centroids.length; a++){
+			for(int b=0; b<centroids[0].length; b++){
+
+				for(int c=0; c<centroids[0][0].length; c++){
+				    if(list.get(a).size()>0) {
+                        centroids[a][b][c] = moyennePixel2(a, b, c, list);
+                    }
+
+
+				}
+
+			}
+		}
+
+
+
+
 	}
+
+	public static byte moyennePixel2(int centroid, int heightPosition, int widthPosition, ArrayList<ArrayList> clusters  ){
+
+		float average = 0;
+
+		for(int i=0; i<clusters.get(centroid).size(); i++){
+
+			//On itère sur l'array afin de "prendre" ses éléments.
+			average += ((byte[][])clusters.get(centroid).get(i))[heightPosition][widthPosition];
+
+
+		}
+
+
+
+
+		return (byte)(average/clusters.get(centroid).size());
+	}
+
+
 	
 	public static byte moyennePixel(int cluster, int h, int k, byte[][][] tensor, int[] assignments) {
 		int tensorLength = tensor.length;
 		int somme = 0;
 		int nbr = 0;
-		byte pixel;
+		byte pixel = 0;
 		
 		for (int i = 0; i < tensorLength; i++) {
 			if (assignments[i] == cluster) {
@@ -225,11 +273,11 @@ public class KMeansClustering {
 				nbr++;	
 			}
 		}
-		
-		if (nbr != 0) {
+		if(nbr !=0){
 			pixel = (byte) (somme/nbr);
-		
-			
+
+		}
+
 		return pixel;
 	}
 
@@ -246,6 +294,7 @@ public class KMeansClustering {
      */
 	public static void initialize(byte[][][] tensor, int[] assignments, byte[][][] centroids) {
 		Set<Integer> centroidIds = new HashSet<>();
+
 		Random r = new Random("cs107-2018".hashCode());
 		while (centroidIds.size() != centroids.length)
 			centroidIds.add(r.nextInt(tensor.length));
