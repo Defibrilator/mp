@@ -6,15 +6,15 @@ public class KNNTest {
 	public static void main(String[] args) {
 		// TODO: Adapt path to data files in parsing test
 		// Decommentez au fur et à mesure que vous implémentez
-		//extractIntTest();
-		//parsingTest();
-		//squaredEuclideanDistanceTest();
-		//invertedSimilarityTest();
-		//quicksortTest();
-		//indexOfMaxTest();
-		//electLabelTest();
-		//knnClassifyTest();
-		//accuracyTest();
+		extractIntTest();
+		parsingTest();
+		squaredEuclideanDistanceTest();
+		invertedSimilarityTest();
+		quicksortTest();
+		indexOfMaxTest();
+		electLabelTest();
+		knnClassifyTest();
+		accuracyTest();
 	}
 
 	public static void extractIntTest() {
@@ -37,8 +37,8 @@ public class KNNTest {
 
 	public static void parsingTest() {
 		System.out.println("=== Test parsing ===");
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10-per-digit_labels_train"));
+		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("mp/datasets/10-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("mp/datasets/10-per-digit_labels_train"));
 
 		System.out.println("Number of images: " + images.length);
 		System.out.println("Height: " + images[0].length);
