@@ -226,8 +226,10 @@ public class KMeansClustering {
 			}
 		}
 		
-		pixel = (byte) (somme/nbr);
+		if (nbr != 0) {
+			pixel = (byte) (somme/nbr);
 		
+			
 		return pixel;
 	}
 
